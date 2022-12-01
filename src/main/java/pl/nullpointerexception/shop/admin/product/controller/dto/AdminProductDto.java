@@ -15,9 +15,8 @@ public class AdminProductDto {
     @NotBlank//nie mozna zapisać tylko białych znaków
     @Length(min = 4)
     private String name;
-    @NotBlank
-    @Length(min = 4)
-    private String category;
+    @NotNull
+    private Long categoryId;
     @NotBlank
     @Length(min = 4)
     private String description;
