@@ -1,6 +1,5 @@
 package pl.nullpointerexception.shop.admin.category.controller;
 
-import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.nullpointerexception.shop.admin.category.controller.dto.AdminCategoryDto;
@@ -8,6 +7,8 @@ import pl.nullpointerexception.shop.admin.category.model.AdminCategory;
 import pl.nullpointerexception.shop.admin.category.service.AdminCategoryService;
 
 import java.util.List;
+
+import static pl.nullpointerexception.shop.admin.common.utils.SlugifyUtils.slugifySlug;
 
 @RestController
 @RequestMapping("/admin/categories")
@@ -47,13 +48,8 @@ public class AdminCategoryController {
                 .id(id)
                 .name(adminCategoryDto.getName())
                 .description(adminCategoryDto.getDescription())
-                .slug(slugifyCategoryName(adminCategoryDto.getSlug()))
+                .slug(slugifySlug(adminCategoryDto.getSlug()))
                 .build();
     }
 
-    private String slugifyCategoryName(String slug) {
-        Slugify slugify = new Slugify();
-        return slugify.withCustomReplacement("_","-").slugify(slug);//zamieniamy podkreslenia na myslniki
-
-    }
 }

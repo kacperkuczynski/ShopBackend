@@ -1,4 +1,4 @@
-package pl.nullpointerexception.shop.category.model;
+package pl.nullpointerexception.shop.common.model;
 
 import lombok.Getter;
 
