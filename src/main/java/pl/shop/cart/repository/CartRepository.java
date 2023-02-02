@@ -3,6 +3,7 @@ package pl.shop.cart.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import pl.shop.cart.model.Cart;
 
 import java.time.LocalDateTime;
@@ -17,5 +18,5 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
 
     @Query("delete from Cart c where c.id in (:ids)")
     @Modifying
-    void deleteAllByIdIn(List<Long> ids);
+    void deleteAllByIdIn(@Param("ids")List<Long> ids);
 }
