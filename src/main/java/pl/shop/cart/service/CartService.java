@@ -10,6 +10,8 @@ import pl.shop.cart.repository.CartRepository;
 import pl.shop.common.model.Product;
 import pl.shop.common.repository.ProductRepository;
 
+import java.util.List;
+
 import static java.time.LocalDateTime.now;
 
 @Service
@@ -18,6 +20,7 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+
     public Cart getCart(Long id) {
         return cartRepository.findById(id).orElseThrow();
     }
@@ -28,7 +31,7 @@ public class CartService {
         cart.addProduct(CartItem.builder()
                 .quantity(cartProductDto.quantity())
                 .product(getProduct(cartProductDto.productId()))
-                        .cartId(cart.getId())
+                .cartId(cart.getId())
                 .build());
         return cart;
     }
@@ -38,9 +41,21 @@ public class CartService {
     }
 
     private Cart getInitializedCart(Long id) {
-        if(id == null || id <= 0){
+        if (id == null || id <= 0) {
             return cartRepository.save(Cart.builder().created(now()).build());
         }
         return cartRepository.findById(id).orElseThrow();
+    }
+
+    @Transactional
+    public Cart updateCart(Long id, List<CartProductDto> cartProductDtos) {
+        Cart cart = cartRepository.findById(id).orElseThrow();
+        cart.getItems().forEach(cartItem -> {
+            cartProductDtos.stream()
+                    .filter(cartProductDto -> cartItem.getProduct().getId().equals(cartProductDto.productId()))
+                    .findFirst()
+                    .ifPresent(cartProductDto -> cartItem.setQuantity(cartProductDto.quantity()));
+        });
+        return cart;
     }
 }
