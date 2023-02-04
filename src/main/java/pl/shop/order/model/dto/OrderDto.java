@@ -30,4 +30,6 @@ public class OrderDto {
     private String phone;
     @NotBlank
     private Long cartId;
+    @NotBlank
+    private Long shipmentId;
 }
