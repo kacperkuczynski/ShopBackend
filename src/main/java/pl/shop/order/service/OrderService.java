@@ -10,11 +10,13 @@ import pl.shop.common.repository.CartRepository;
 import pl.shop.order.model.Order;
 import pl.shop.order.model.OrderRow;
 import pl.shop.order.model.OrderStatus;
+import pl.shop.order.model.Payment;
 import pl.shop.order.model.Shipment;
 import pl.shop.order.model.dto.OrderDto;
 import pl.shop.order.model.dto.OrderSummary;
 import pl.shop.order.repository.OrderRepository;
 import pl.shop.order.repository.OrderRowRepository;
+import pl.shop.order.repository.PaymentRepository;
 import pl.shop.order.repository.ShipmentRepository;
 
 import java.math.BigDecimal;
@@ -30,12 +32,14 @@ public class OrderService {
     private final CartItemRepository cartItemRepository;
     private final OrderRowRepository orderRowRepository;
     private final ShipmentRepository shipmentRepository;
+    private final PaymentRepository paymentRepository;
 
     @Transactional
     public OrderSummary placeOrder(OrderDto orderDto) {
         // pobrać koszyk
         Cart cart = cartRepository.findById(orderDto.getCartId()).orElseThrow();
         Shipment shipment = shipmentRepository.findById(orderDto.getShipmentId()).orElseThrow();
+        Payment payment = paymentRepository.findById(orderDto.getPaymentId()).orElseThrow();
         // stworzenie zamówienia z wierszami
         Order order = Order.builder()
                 .firstname(orderDto.getFirstname())
@@ -48,6 +52,7 @@ public class OrderService {
                 .placeDate(LocalDateTime.now())
                 .orderStatus(OrderStatus.NEW)
                 .grossValue(calculateGrossValue(cart.getItems(), shipment))
+                .payment(payment)
                 .build();
         // zapisać zamówienie
         Order newOrder = orderRepository.save(order);
@@ -61,6 +66,7 @@ public class OrderService {
                 .placeDate(newOrder.getPlaceDate())
                 .status(newOrder.getOrderStatus())
                 .grossValue(newOrder.getGrossValue())
+                .payment(payment)
                 .build();
     }
 
