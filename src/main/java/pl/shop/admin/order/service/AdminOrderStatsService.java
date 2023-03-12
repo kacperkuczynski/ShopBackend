@@ -31,24 +31,65 @@ public class AdminOrderStatsService {
         for (int i = from.getDayOfMonth(); i < to.getDayOfMonth(); i++){
             result.put(i, aggregateValues(i, orders));
         }
+        List<Long> ordersList = result.values().stream().map(v ->
+                v.orders()).toList();
+        List<BigDecimal> salesList = result.values().stream().map(v ->
+                v.sales()).toList();
+
         return AdminOrderStats.builder()
                 .label(result.keySet().stream().toList())
                 .sale(result.values().stream().map(o -> o.sales).toList())
                 .order(result.values().stream().map(o -> o.orders).toList())
+                .ordersCount(ordersList.stream().reduce(Long::sum).orElse(0L))
+                .salesSum(salesList.stream().reduce(BigDecimal::add).orElse(BigDecimal.ZERO))
                 .build();
+
+//        TreeMap<Integer, AdminOrderStatsValue> result =
+//                IntStream.rangeClosed(from.getDayOfMonth(), to.getDayOfMonth())
+//                        .boxed()
+//                        .map(i -> aggregateValues(i, orders))
+//                        .collect(toMap(
+//                                value -> value,
+//                                value -> value,
+//                                (t, t2) -> {
+//                                    throw new IllegalArgumentException();
+//                                },
+//                                TreeMap::new
+//                        ));
+//        return AdminOrderStats.builder()
+//                .label(result.keySet().stream().toList())
+//                .order(result.values().stream().map(v ->
+//                        v.orders()).toList())
+//                .sale(result.values().stream().map(v ->
+//                        v.sales()).toList())
+//                .build();
+
+
     }
 
-    private AdminOrderStatsValue aggregateValues(int i, List<AdminOrder> orders) {
-        BigDecimal totalValue = BigDecimal.ZERO;
-        Long orderCount = 0L;
-        for (AdminOrder order : orders) {
-            if (i == order.getPlaceDate().getDayOfMonth()){
-                totalValue = totalValue.add(order.getGrossValue());
-                orderCount++;
-            }
-        }
-        return new AdminOrderStatsValue(totalValue, orderCount);
+    private AdminOrderStatsValue aggregateValues(Integer i, List<AdminOrder> orders) {
+//        BigDecimal totalValue = BigDecimal.ZERO;
+//        Long orderCount = 0L;
+//        for (AdminOrder order : orders) {
+//            if (i == order.getPlaceDate().getDayOfMonth()){
+//                totalValue = totalValue.add(order.getGrossValue());
+//                orderCount++;
+//            }
+//        AdminOrderStatsValue result = orders.stream()
+//                .reduce(orderCount, ())
+//        }
+//        return new AdminOrderStatsValue(totalValue, orderCount);
+
+        return orders.stream()
+                .filter(adminOrder ->
+                        adminOrder.getPlaceDate().getDayOfMonth() == i)
+                .map(adminOrder -> adminOrder.getGrossValue())
+                .reduce(new AdminOrderStatsValue(i, BigDecimal.ZERO, 0L),
+                        (AdminOrderStatsValue o, BigDecimal v) ->
+                                new AdminOrderStatsValue(i, o.sales().add(v), o.orders() + 1),
+                        (o, o2) -> null
+                        );
     }
 
-    private record AdminOrderStatsValue(BigDecimal sales, Long orders){}
+    private record AdminOrderStatsValue(Integer days, BigDecimal sales, Long orders){}
 }
