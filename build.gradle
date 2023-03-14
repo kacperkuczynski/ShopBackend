@@ -35,6 +35,12 @@ dependencies {
 	implementation group: 'org.jsoup', name: 'jsoup', version: '1.15.4'
 	implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.9.0'
 
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	implementation group: 'com.auth0', name: 'java-jwt', version: '4.3.0'
+
+
 }
 
 tasks.named('test') {
