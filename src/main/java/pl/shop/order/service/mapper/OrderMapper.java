@@ -4,7 +4,7 @@ import pl.shop.common.model.Cart;
 import pl.shop.common.model.CartItem;
 import pl.shop.order.model.Order;
 import pl.shop.order.model.OrderRow;
-import pl.shop.order.model.OrderStatus;
+import pl.shop.common.model.OrderStatus;
 import pl.shop.order.model.Payment;
 import pl.shop.order.model.Shipment;
 import pl.shop.order.model.dto.OrderDto;

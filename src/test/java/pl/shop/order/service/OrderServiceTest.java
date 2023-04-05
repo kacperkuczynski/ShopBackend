@@ -12,7 +12,7 @@ import pl.shop.common.model.CartItem;
 import pl.shop.common.model.Product;
 import pl.shop.common.repository.CartItemRepository;
 import pl.shop.common.repository.CartRepository;
-import pl.shop.order.model.OrderStatus;
+import pl.shop.common.model.OrderStatus;
 import pl.shop.order.model.Payment;
 import pl.shop.order.model.PaymentType;
 import pl.shop.order.model.Shipment;

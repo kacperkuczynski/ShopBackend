@@ -1,6 +1,6 @@
-package pl.shop.admin.order.model;
+package pl.shop.common.model;
 
-public enum AdminOrderStatus {
+public enum OrderStatus {
     NEW("Nowe"),
     PAID("Opłacone"),
     PROCESSING("Przetwarzane"),
@@ -10,7 +10,7 @@ public enum AdminOrderStatus {
     REFUND("Zwrócone");
 
     private String value;
-    AdminOrderStatus(String value){
+    OrderStatus(String value){
         this.value = value;
     }
 

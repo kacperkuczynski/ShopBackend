@@ -7,12 +7,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.shop.order.model.Order;
 import pl.shop.order.model.dto.InitOrder;
 import pl.shop.order.model.dto.OrderDto;
+import pl.shop.order.model.dto.OrderListDto;
 import pl.shop.order.model.dto.OrderSummary;
 import pl.shop.order.service.OrderService;
 import pl.shop.order.service.PaymentService;
 import pl.shop.order.service.ShipmentService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,5 +39,13 @@ public class OrderController {
                 .shipment(shipmentService.getShipments())
                 .payment(paymentService.getPayments())
                 .build();
+    }
+
+    @GetMapping
+    public List<OrderListDto> getOrders(@AuthenticationPrincipal Long userId){
+        if (userId == null){
+            throw new IllegalArgumentException("Bral użytkownika");
+        }
+        return orderService.getOrderForCustomer(userId);
     }
 }
